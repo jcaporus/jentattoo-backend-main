@@ -15,7 +15,7 @@ ma = Marshmallow(app)
 CORS(app)
 
 
-class Item(db.Model):
+class Package(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     price = db.Column(db.Float, nullable=False)
@@ -24,29 +24,29 @@ class Item(db.Model):
         self.name = name
         self.price = price
 
-class ItemSchema(ma.Schema):
+class PackageSchema(ma.Schema):
     class Meta:
         fields = ("id", "name", "price")
 
-item_schema = ItemSchema()
-items_schema = ItemSchema(many=True)
+package_schema = PackageSchema()
+packages_schema = PackageSchema(many=True)
 
 
-@app.route("/item/add", methods=["POST"])
-def add_item():
+@app.route("/package/add", methods=["POST"])
+def add_package():
     name = request.json.get("name")
     price = request.json.get("price")
 
-    record = Item(name, price)
+    record = Package(name, price)
     db.session.add(record)
     db.session.commit()
 
     return jsonify(item_schema.dump(record))
 
 @app.route("/item/get", methods=["GET"])
-def get_all_items():
-    all_items = Item.query.all()
-    return jsonify(items_schema.dump(all_items))
+def get_all_packages():
+    all_packages = Package.query.all()
+    return jsonify(packages_schema.dump(all_packages))
 
 
 if __name__ == "__main__":
